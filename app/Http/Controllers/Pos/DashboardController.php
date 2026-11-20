@@ -29,7 +29,7 @@ class DashboardController extends Controller
         })
             ->selectRaw('menu_item_id, sum(quantity) as total_qty')
             ->groupBy('menu_item_id')
-            ->orderByDesc('total_qty')
+            ->orderByRaw('sum(quantity) desc')
             ->with('menuItem')
             ->first();
 
@@ -79,7 +79,7 @@ class DashboardController extends Controller
         })
             ->selectRaw('menu_item_id, sum(quantity) as total_qty, sum(subtotal) as total_revenue')
             ->groupBy('menu_item_id')
-            ->orderByDesc('total_qty')
+            ->orderByRaw('sum(quantity) desc')
             ->with('menuItem.category')
             ->take(5)
             ->get()

@@ -85,8 +85,9 @@ class PosController extends Controller
             $changeAmount = ($paymentMethod === 'cash') ? max(0, $cashGiven - $totalAmount) : 0;
 
             // Generate sequential invoice number for today
+            $todayDate = Carbon::today()->toDateString();
             $todayStr = Carbon::today()->format('ymd');
-            $countToday = Transaction::whereDate('transaction_date', Carbon::today())->count() + 1;
+            $countToday = Transaction::where('transaction_date', $todayDate)->count() + 1;
             $invoiceNo = sprintf('INV-%s-%04d', $todayStr, $countToday);
 
             // Double check uniqueness

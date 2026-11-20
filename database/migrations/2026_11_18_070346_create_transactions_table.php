@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_no')->unique()->index();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-            $table->integer('total_amount')->default(0);
-            $table->integer('cash_given')->default(0);
-            $table->integer('change_amount')->default(0);
+            $table->bigInteger('total_amount')->default(0);
+            $table->bigInteger('cash_given')->default(0);
+            $table->bigInteger('change_amount')->default(0);
             $table->string('payment_method')->default('cash');
             $table->string('payment_status')->default('paid');
             $table->date('transaction_date')->index();

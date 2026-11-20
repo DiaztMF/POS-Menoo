@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
             $table->foreignId('menu_item_id')->constrained()->onDelete('cascade');
             $table->integer('quantity')->default(1);
-            $table->integer('unit_price');
-            $table->integer('subtotal');
+            $table->bigInteger('unit_price');
+            $table->bigInteger('subtotal');
             $table->timestamps();
         });
     }
