@@ -73,7 +73,7 @@ jobs:
         id: image-meta
         run: |
           REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "image=ghcr.io/${REPO_OWNER}/tefa-pos" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${REPO_OWNER}/pos-menoo" >> "$GITHUB_OUTPUT"
           echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx

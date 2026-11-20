@@ -50,42 +50,41 @@ export function DataTablePagination({
                 Menampilkan <span className="font-semibold text-foreground">{startItem}</span> - <span className="font-semibold text-foreground">{endItem}</span> dari <span className="font-semibold text-foreground">{totalItems}</span> data
             </p>
 
-            {totalPages > 1 && (
-                <Pagination className="mx-0 w-auto justify-end">
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious
-                                onClick={() => onPageChange(currentPage - 1)}
-                                disabled={currentPage <= 1}
-                            />
-                        </PaginationItem>
+            <Pagination className="mx-0 w-auto justify-end">
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious
+                            onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
+                            className={currentPage <= 1 ? "pointer-events-none opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                        />
+                    </PaginationItem>
 
-                        {pages.map((p, idx) =>
-                            p === 'ellipsis' ? (
-                                <PaginationItem key={`ellipsis-${idx}`}>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                            ) : (
-                                <PaginationItem key={p}>
-                                    <PaginationLink
-                                        isActive={p === currentPage}
-                                        onClick={() => onPageChange(p)}
-                                    >
-                                        {p}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            )
-                        )}
+                    {pages.map((p, idx) =>
+                        p === 'ellipsis' ? (
+                            <PaginationItem key={`ellipsis-${idx}`}>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                        ) : (
+                            <PaginationItem key={p}>
+                                <PaginationLink
+                                    isActive={p === currentPage}
+                                    onClick={() => onPageChange(p)}
+                                    className="cursor-pointer"
+                                >
+                                    {p}
+                                </PaginationLink>
+                            </PaginationItem>
+                        )
+                    )}
 
-                        <PaginationItem>
-                            <PaginationNext
-                                onClick={() => onPageChange(currentPage + 1)}
-                                disabled={currentPage >= totalPages}
-                            />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            )}
+                    <PaginationItem>
+                        <PaginationNext
+                            onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
+                            className={currentPage >= totalPages ? "pointer-events-none opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                        />
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
         </div>
     );
 }

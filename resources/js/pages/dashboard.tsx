@@ -123,7 +123,7 @@ export default function Dashboard({
                 {/* Middle Grid: Sales Trend Chart (60%) & Recent Orders (40%) */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                     {/* 7-Day Chart (2 Cols) */}
-                    <div className="lg:col-span-2 h-full">
+                    <div className="lg:col-span-2 flex flex-col h-full">
                         <SalesTrendChart data={sales_trend_7d} />
                     </div>
 
@@ -136,7 +136,7 @@ export default function Dashboard({
                                     Transaksi Terkini
                                 </CardTitle>
                                 <p className="text-xs text-muted-foreground">
-                                    Daftar transaksi kasir terbaru
+                                    Daftar transaksi kasir terbaru hari ini
                                 </p>
                             </div>
                             <Link
@@ -152,7 +152,7 @@ export default function Dashboard({
                                     Belum ada transaksi hari ini
                                 </p>
                             ) : (
-                                <div className="max-h-[260px] overflow-y-auto pr-1.5 space-y-2.5">
+                                <div className="max-h-[220px] overflow-y-auto pr-1.5 space-y-2">
                                     {recent_transactions.map((tx) => (
                                         <div
                                             key={tx.id}

@@ -7,8 +7,8 @@ FROM node:22.11-alpine AS frontend-builder
 
 WORKDIR /app
 
-# Enable pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Enable pnpm via npm to ensure reliable installation in Alpine
+RUN npm install -g pnpm@10.5.2
 
 # Copy dependency manifests first for layer caching
 COPY package.json pnpm-lock.yaml ./
@@ -18,6 +18,7 @@ RUN pnpm install --frozen-lockfile
 
 # Copy source needed for Vite build
 COPY vite.config.ts tsconfig.json components.json ./
+COPY routes/ ./routes/
 COPY resources/ ./resources/
 COPY public/ ./public/
 

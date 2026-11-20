@@ -37,8 +37,8 @@ export function SalesTrendChart({ data }: Props) {
                     </p>
                 </div>
             </CardHeader>
-            <CardContent className="pt-4 flex-1 flex flex-col justify-center">
-                <div className="h-64 w-full">
+            <CardContent className="pt-4 pb-3 flex-1 flex flex-col justify-between min-h-0">
+                <div className="h-[220px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart
                             data={data}
@@ -93,6 +93,10 @@ export function SalesTrendChart({ data }: Props) {
                             />
                         </AreaChart>
                     </ResponsiveContainer>
+                </div>
+                <div className="pt-3 border-t border-border/40 mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Grafik Penjualan Harian</span>
+                    <span className="font-semibold text-primary">Periode 7 Hari</span>
                 </div>
             </CardContent>
         </Card>

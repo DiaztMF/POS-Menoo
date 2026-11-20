@@ -52,7 +52,7 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
 
     // Pagination states
     const [breakdownPage, setBreakdownPage] = useState(1);
-    const breakdownPageSize = 8;
+    const breakdownPageSize = 5;
     const totalBreakdownPages = Math.ceil(itemsBreakdown.length / breakdownPageSize);
     const paginatedItems = itemsBreakdown.slice(
         (breakdownPage - 1) * breakdownPageSize,
@@ -60,7 +60,7 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
     );
 
     const [ledgerPage, setLedgerPage] = useState(1);
-    const ledgerPageSize = 10;
+    const ledgerPageSize = 5;
     const totalLedgerPages = Math.ceil(transactions.length / ledgerPageSize);
     const paginatedTransactions = transactions.slice(
         (ledgerPage - 1) * ledgerPageSize,
