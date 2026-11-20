@@ -28,7 +28,7 @@ RUN pnpm run build
 # ==========================================
 # Stage 2: Install Composer Dependencies
 # ==========================================
-FROM composer:2.8.3 AS composer-builder
+FROM composer:2.11.1 AS composer-builder
 
 WORKDIR /app
 
