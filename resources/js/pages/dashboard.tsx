@@ -1,5 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { SalesTrendChart } from '@/components/dashboard/sales-trend-chart';
 import { Button } from '@/components/ui/button';
@@ -58,7 +57,7 @@ export default function Dashboard({
     top_items,
 }: Props) {
     return (
-        <AppLayout breadcrumbs={[{ title: 'Dashboard', href: '/dashboard' }]}>
+        <>
             <Head title="Dashboard" />
 
             <div className="flex flex-1 flex-col gap-6 p-6 max-w-7xl mx-auto w-full">
@@ -96,7 +95,7 @@ export default function Dashboard({
                         value={rupiah(metrics.today_sales)}
                         subtitle="Total penjualan kotor"
                         icon={DollarSign}
-                        accentColor="text-emerald-600 dark:text-emerald-400"
+                        accentColor="text-amber-800 dark:text-amber-400"
                     />
                     <StatCard
                         title="Total Transaksi"
@@ -161,11 +160,7 @@ export default function Dashboard({
                                                     </span>
                                                     <Badge
                                                         variant="outline"
-                                                        className={`text-[9px] uppercase px-1 py-0 ${
-                                                            tx.payment_method === 'cash'
-                                                                ? 'text-emerald-700 border-emerald-300 dark:text-emerald-400'
-                                                                : 'text-violet-700 border-violet-300 dark:text-violet-400'
-                                                        }`}
+                                                        className="text-[9px] uppercase px-1 py-0 text-amber-900 border-amber-300 bg-amber-50/50"
                                                     >
                                                         {tx.payment_method}
                                                     </Badge>
@@ -240,6 +235,6 @@ export default function Dashboard({
                     </CardContent>
                 </Card>
             </div>
-        </AppLayout>
+        </>
     );
 }

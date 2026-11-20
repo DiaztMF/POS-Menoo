@@ -90,8 +90,8 @@
     --secondary-foreground: #3e2723;
     --muted: #efebe9;
     --muted-foreground: #6d4c41;
-    --accent: #b2dfdb;
-    --accent-foreground: #004d40;
+    --accent: #d7ccc8;
+    --accent-foreground: #3e2723;
     --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: #ffffff;
     --border: #d7ccc8;
@@ -99,7 +99,7 @@
     --ring: #3e2723;
     --chart-1: #3e2723;
     --chart-2: #8d6e63;
-    --chart-3: #004d40;
+    --chart-3: #a1887f;
     --chart-4: #f9a825;
     --chart-5: #d7ccc8;
     --radius: 0.75rem;

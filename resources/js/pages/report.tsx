@@ -1,6 +1,5 @@
 import { Head } from '@inertiajs/react';
 import { useCallback, useEffect, useState } from 'react';
-import AppLayout from '@/layouts/app-layout';
 import { ReportSummary } from '@/components/report/report-summary';
 import { ReportTable, type ReportItemBreakdown, type ReportTransaction } from '@/components/report/report-table';
 import { Button } from '@/components/ui/button';
@@ -85,7 +84,7 @@ export default function Report() {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Laporan Penjualan', href: '/laporan' }]}>
+        <>
             <Head title="Laporan Penjualan" />
 
             <div className="flex flex-1 flex-col gap-6 p-6 max-w-7xl mx-auto w-full">
@@ -221,8 +220,6 @@ export default function Report() {
                         <ReportSummary
                             totalSales={data.total_sales}
                             transactionCount={data.transaction_count}
-                            cashSales={data.cash_sales}
-                            qrisSales={data.qris_sales}
                         />
 
                         {/* Tables */}
@@ -233,6 +230,6 @@ export default function Report() {
                     </div>
                 )}
             </div>
-        </AppLayout>
+        </>
     );
 }

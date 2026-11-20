@@ -75,7 +75,7 @@ export function ReceiptDialog({ open, onClose, receipt }: Props) {
                         </div>
                         <div className="flex justify-between">
                             <span className="text-zinc-500">Metode:</span>
-                            <span className="uppercase font-semibold">{receipt.payment_method}</span>
+                            <span className="uppercase font-semibold">TUNAI</span>
                         </div>
                     </div>
 
@@ -104,23 +104,14 @@ export function ReceiptDialog({ open, onClose, receipt }: Props) {
                             <span>TOTAL:</span>
                             <span>{rupiah(receipt.total_amount)}</span>
                         </div>
-                        {receipt.payment_method === 'cash' ? (
-                            <>
-                                <div className="flex justify-between text-zinc-600">
-                                    <span>Tunai Diterima:</span>
-                                    <span>{rupiah(receipt.cash_given)}</span>
-                                </div>
-                                <div className="flex justify-between font-semibold text-emerald-800">
-                                    <span>Kembalian:</span>
-                                    <span>{rupiah(receipt.change_amount)}</span>
-                                </div>
-                            </>
-                        ) : (
-                            <div className="flex justify-between text-zinc-600">
-                                <span>Status Bayar:</span>
-                                <span className="font-semibold text-emerald-700">LUNAS (QRIS)</span>
-                            </div>
-                        )}
+                        <div className="flex justify-between text-zinc-600">
+                            <span>Tunai Diterima:</span>
+                            <span>{rupiah(receipt.cash_given)}</span>
+                        </div>
+                        <div className="flex justify-between font-semibold text-emerald-800">
+                            <span>Kembalian:</span>
+                            <span>{rupiah(receipt.change_amount)}</span>
+                        </div>
                     </div>
 
                     <div className="border-t border-dashed border-zinc-400 my-3" />

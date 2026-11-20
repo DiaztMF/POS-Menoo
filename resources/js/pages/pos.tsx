@@ -1,6 +1,5 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
-import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -169,7 +168,7 @@ export default function Pos() {
     }, [cart, showPaymentModal]);
 
     // Checkout execution
-    const handleConfirmPayment = async (paymentMethod: 'cash' | 'qris', cashGiven: number) => {
+    const handleConfirmPayment = async (cashGiven: number) => {
         setIsSubmitting(true);
         try {
             const res = await fetch('/api/pos/checkout', {
@@ -186,7 +185,7 @@ export default function Pos() {
                         menu_item_id: i.menu_item_id,
                         quantity: i.quantity,
                     })),
-                    payment_method: paymentMethod,
+                    payment_method: 'cash',
                     cash_given: cashGiven,
                 }),
             });
@@ -209,7 +208,7 @@ export default function Pos() {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Kasir POS', href: '/pos' }]}>
+        <>
             <Head title="Kasir POS" />
 
             <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-background">
@@ -469,6 +468,6 @@ export default function Pos() {
                 onClose={() => setCompletedReceipt(null)}
                 receipt={completedReceipt}
             />
-        </AppLayout>
+        </>
     );
 }

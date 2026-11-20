@@ -80,8 +80,7 @@ class RealisticPosSeeder extends Seeder
 
             for ($i = 0; $i < $txCount; $i++) {
                 $invoiceNo = sprintf('INV-%s-%04d', $date->format('ymd'), $invoiceSeq++);
-                $isQris = (rand(1, 10) <= 4); // 40% QRIS, 60% Cash
-                $paymentMethod = $isQris ? 'qris' : 'cash';
+                $paymentMethod = 'cash';
 
                 // Pick 1 to 3 random items
                 $pickedItems = collect($createdItems)->random(rand(1, 3));
@@ -100,17 +99,12 @@ class RealisticPosSeeder extends Seeder
                     ];
                 }
 
-                if ($paymentMethod === 'cash') {
-                    // Quick cash simulation: round up to nearest 10k or 20k or 50k
-                    $cashGiven = (int) (ceil($totalAmount / 10000) * 10000);
-                    if ($cashGiven === $totalAmount && rand(1, 2) === 1) {
-                        $cashGiven += (rand(1, 2) === 1 ? 10000 : 20000);
-                    }
-                    $changeAmount = $cashGiven - $totalAmount;
-                } else {
-                    $cashGiven = $totalAmount;
-                    $changeAmount = 0;
+                // Quick cash simulation: round up to nearest 10k or 20k or 50k
+                $cashGiven = (int) (ceil($totalAmount / 10000) * 10000);
+                if ($cashGiven === $totalAmount && rand(1, 2) === 1) {
+                    $cashGiven += (rand(1, 2) === 1 ? 10000 : 20000);
                 }
+                $changeAmount = $cashGiven - $totalAmount;
 
                 $txTime = $date->copy()->setHour(rand(8, 17))->setMinute(rand(0, 59))->setSecond(rand(0, 59));
 

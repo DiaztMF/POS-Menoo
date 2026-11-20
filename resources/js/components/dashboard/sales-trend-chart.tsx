@@ -46,8 +46,8 @@ export function SalesTrendChart({ data }: Props) {
                         >
                             <defs>
                                 <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--color-primary, #10b981)" stopOpacity={0.4} />
-                                    <stop offset="95%" stopColor="var(--color-primary, #10b981)" stopOpacity={0.0} />
+                                    <stop offset="5%" stopColor="var(--color-primary, #3e2723)" stopOpacity={0.35} />
+                                    <stop offset="95%" stopColor="var(--color-primary, #3e2723)" stopOpacity={0.0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(150, 150, 150, 0.15)" />
@@ -86,7 +86,7 @@ export function SalesTrendChart({ data }: Props) {
                             <Area
                                 type="monotone"
                                 dataKey="total"
-                                stroke="var(--color-primary, #10b981)"
+                                stroke="var(--color-primary, #3e2723)"
                                 strokeWidth={2.5}
                                 fillOpacity={1}
                                 fill="url(#colorSales)"

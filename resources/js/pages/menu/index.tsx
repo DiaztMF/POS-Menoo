@@ -1,6 +1,5 @@
 import { Head, router } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
-import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -139,7 +138,7 @@ export default function MenuIndex({ categories, items: initialItems }: Props) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Kelola Menu', href: '/menu' }]}>
+        <>
             <Head title="Kelola Menu" />
 
             <div className="flex flex-1 flex-col gap-6 p-6 max-w-7xl mx-auto w-full">
@@ -271,18 +270,18 @@ export default function MenuIndex({ categories, items: initialItems }: Props) {
                                                     onClick={() => handleToggle(item)}
                                                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
                                                         item.is_available
-                                                            ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-950 dark:text-emerald-300'
-                                                            : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400'
+                                                            ? 'bg-[#efebe9] text-[#3e2723] hover:bg-[#d7ccc8]'
+                                                            : 'bg-muted/40 text-muted-foreground hover:bg-muted'
                                                     }`}
                                                 >
                                                     {item.is_available ? (
                                                         <>
-                                                            <CheckCircle2 className="size-3.5 text-emerald-600" />
+                                                            <CheckCircle2 className="size-3.5 text-primary" />
                                                             Tersedia
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <XCircle className="size-3.5 text-zinc-500" />
+                                                            <XCircle className="size-3.5 text-muted-foreground" />
                                                             Habis
                                                         </>
                                                     )}
@@ -335,6 +334,6 @@ export default function MenuIndex({ categories, items: initialItems }: Props) {
                 categories={categories}
                 initialData={editingItem}
             />
-        </AppLayout>
+        </>
     );
 }

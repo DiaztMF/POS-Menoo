@@ -47,11 +47,11 @@ class PosController extends Controller
             'items' => 'required|array|min:1',
             'items.*.menu_item_id' => 'required|exists:menu_items,id',
             'items.*.quantity' => 'required|integer|min:1',
-            'payment_method' => 'nullable|string|in:cash,qris,transfer',
+            'payment_method' => 'nullable|string|in:cash',
             'cash_given' => 'nullable|integer|min:0',
         ]);
 
-        $paymentMethod = $validated['payment_method'] ?? 'cash';
+        $paymentMethod = 'cash';
 
         return DB::transaction(function () use ($validated, $paymentMethod) {
             $totalAmount = 0;
