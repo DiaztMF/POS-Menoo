@@ -44,7 +44,7 @@ RUN composer install \
 # ==========================================
 # Stage 3: Production Runtime (FrankenPHP)
 # ==========================================
-FROM dunglas/frankenphp:1.4.4-php8.4-alpine AS runner
+FROM dunglas/frankenphp:1.13.5-php8.4-alpine AS runner
 
 # Install essential production extensions for Laravel + PostgreSQL
 RUN install-php-extensions \
