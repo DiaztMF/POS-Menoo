@@ -1,216 +1,238 @@
-import { Head, Link } from '@inertiajs/react';
-import { pos, report } from '@/routes';
-import { daily } from '@/routes/report';
+import { Head } from '@inertiajs/react';
+import { useCallback, useEffect, useState } from 'react';
+import AppLayout from '@/layouts/app-layout';
+import { ReportSummary } from '@/components/report/report-summary';
+import { ReportTable, type ReportItemBreakdown, type ReportTransaction } from '@/components/report/report-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
-import { ArrowLeft, Calendar, CreditCard, Loader2, ShoppingBag } from 'lucide-react';
-import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Calendar, FileDown, Loader2, Printer, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
-type DailyReport = {
-    date: string;
+type ReportData = {
+    start_date: string;
+    end_date: string;
     total_sales: number;
     transaction_count: number;
-    items_breakdown: {
-        menu_item_id: number;
-        menu_item_name: string;
-        quantity: number;
-        revenue: number;
-    }[];
+    cash_sales: number;
+    qrisSales: number;
+    cash_sales_raw?: number;
+    qris_sales: number;
+    items_breakdown: ReportItemBreakdown[];
+    transactions: ReportTransaction[];
 };
 
-const rupiah = (value: number): string => `Rp ${value.toLocaleString('id-ID')}`;
-
-const localToday = (): string => {
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${now.getFullYear()}-${month}-${day}`;
+const formatDateInput = (date: Date): string => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
 };
 
 export default function Report() {
-    const [data, setData] = useState<DailyReport | null>(null);
-    const [selectedDate, setSelectedDate] = useState<string>(localToday());
-    const [loading, setLoading] = useState(false);
+    const todayStr = formatDateInput(new Date());
 
-    const fetchReport = async () => {
-        setLoading(true);
+    const [startDate, setStartDate] = useState<string>(todayStr);
+    const [endDate, setEndDate] = useState<string>(todayStr);
+    const [activePreset, setActivePreset] = useState<'today' | '7days' | 'month' | 'custom'>('today');
+    const [data, setData] = useState<ReportData | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const fetchReport = useCallback(async (start: string, end: string) => {
+        setIsLoading(true);
         try {
-            const res = await fetch(daily.url({ query: { date: selectedDate } }), {
+            const res = await fetch(`/api/laporan?start_date=${start}&end_date=${end}`, {
                 headers: { Accept: 'application/json' },
             });
-            if (!res.ok) {
-                throw new Error('Gagal memuat laporan');
-            }
-            setData(await res.json());
-        } catch {
-            setData(null);
-            toast.error('Gagal memuat laporan');
+            if (!res.ok) throw new Error('Gagal mengambil data laporan');
+            const result: ReportData = await res.json();
+            setData(result);
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Gagal memuat laporan';
+            toast.error(msg);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchReport(startDate, endDate);
+    }, [startDate, endDate, fetchReport]);
+
+    // Preset handlers
+    const applyPreset = (preset: 'today' | '7days' | 'month') => {
+        setActivePreset(preset);
+        const now = new Date();
+        const end = formatDateInput(now);
+
+        if (preset === 'today') {
+            setStartDate(end);
+            setEndDate(end);
+        } else if (preset === '7days') {
+            const past7 = new Date();
+            past7.setDate(past7.getDate() - 6);
+            setStartDate(formatDateInput(past7));
+            setEndDate(end);
+        } else if (preset === 'month') {
+            const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            setStartDate(formatDateInput(startMonth));
+            setEndDate(end);
         }
     };
 
-    return (
-        <>
-            <Head title="Laporan Penjualan" />
-            <div className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">
-                <Link
-                    href={pos()}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                    <ArrowLeft className="size-3.5" aria-hidden="true" />
-                    Kembali ke Kasir
-                </Link>
+    const handlePrintReport = () => {
+        window.print();
+    };
 
-                {/* Filter */}
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                    <div className="flex-1">
-                        <label
-                            htmlFor="report-date"
-                            className="mb-1.5 block text-xs font-medium text-muted-foreground"
-                        >
-                            Tanggal
-                        </label>
-                        <input
-                            id="report-date"
-                            type="date"
-                            value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        />
+    return (
+        <AppLayout breadcrumbs={[{ title: 'Laporan Penjualan', href: '/laporan' }]}>
+            <Head title="Laporan Penjualan" />
+
+            <div className="flex flex-1 flex-col gap-6 p-6 max-w-7xl mx-auto w-full">
+                {/* Header & Print Actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                            Laporan Penjualan Kasir
+                        </h1>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            Rekapitulasi omset harian, rincian produk terjual, dan pembagian metode pembayaran.
+                        </p>
                     </div>
-                    <Button onClick={fetchReport} disabled={loading} className="shrink-0">
-                        {loading ? (
-                            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                        ) : (
-                            <Calendar className="size-4" aria-hidden="true" />
-                        )}
-                        {loading ? 'Memuat...' : 'Lihat Laporan'}
-                    </Button>
+
+                    <div className="flex items-center gap-2 print:hidden">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => fetchReport(startDate, endDate)}
+                            disabled={isLoading}
+                            size="sm"
+                        >
+                            <RefreshCw className={`mr-2 size-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+                            Segarkan
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={handlePrintReport}
+                            disabled={isLoading || !data}
+                            size="sm"
+                            className="bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 font-semibold"
+                        >
+                            <Printer className="mr-2 size-4" />
+                            Cetak Laporan / PDF
+                        </Button>
+                    </div>
                 </div>
 
-                {/* Summary */}
-                {data && (
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        <Card className="border-border/50">
-                            <CardContent className="flex items-center gap-3 p-4">
-                                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                    <CreditCard className="size-5 text-primary" aria-hidden="true" />
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="text-xs text-muted-foreground">Total Penjualan</div>
-                                    <div className="truncate font-serif text-xl font-bold tabular-nums text-lunar-deep-roast">
-                                        {rupiah(data.total_sales)}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="border-border/50">
-                            <CardContent className="flex items-center gap-3 p-4">
-                                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                    <ShoppingBag className="size-5 text-primary" aria-hidden="true" />
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="text-xs text-muted-foreground">Jumlah Transaksi</div>
-                                    <div className="font-serif text-xl font-bold tabular-nums text-lunar-deep-roast">
-                                        {data.transaction_count}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="border-border/50">
-                            <CardContent className="flex items-center gap-3 p-4">
-                                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                    <Calendar className="size-5 text-primary" aria-hidden="true" />
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="text-xs text-muted-foreground">Tanggal</div>
-                                    <div className="text-xs font-medium">
-                                        {new Date(data.date).toLocaleDateString('id-ID', {
-                                            weekday: 'long',
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                        })}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                )}
+                {/* Filter Bar (Hidden in Print) */}
+                <div className="p-4 rounded-xl border border-border/70 bg-card shadow-xs space-y-3 print:hidden">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        {/* Quick Presets */}
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs font-medium text-muted-foreground mr-1">
+                                Periode Cepat:
+                            </span>
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant={activePreset === 'today' ? 'default' : 'outline'}
+                                onClick={() => applyPreset('today')}
+                                className="h-8 text-xs font-semibold rounded-lg"
+                            >
+                                Hari Ini
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant={activePreset === '7days' ? 'default' : 'outline'}
+                                onClick={() => applyPreset('7days')}
+                                className="h-8 text-xs font-semibold rounded-lg"
+                            >
+                                7 Hari Terakhir
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant={activePreset === 'month' ? 'default' : 'outline'}
+                                onClick={() => applyPreset('month')}
+                                className="h-8 text-xs font-semibold rounded-lg"
+                            >
+                                Bulan Ini
+                            </Button>
+                        </div>
 
-                {/* Breakdown table */}
-                {data && data.items_breakdown.length > 0 && (
-                    <Card className="border-border/50">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="font-serif text-lg text-lunar-deep-roast">Rincian per Menu</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <div className="overflow-x-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border-border/50 hover:bg-transparent">
-                                            <TableHead className="text-xs">Menu</TableHead>
-                                            <TableHead className="text-right text-xs">Qty</TableHead>
-                                            <TableHead className="text-right text-xs">Pendapatan</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {data.items_breakdown.map((item) => (
-                                            <TableRow key={item.menu_item_id} className="border-border/50">
-                                                <TableCell className="py-2.5 text-xs font-medium">
-                                                    {item.menu_item_name}
-                                                </TableCell>
-                                                <TableCell className="py-2.5 text-right text-xs tabular-nums">
-                                                    {item.quantity}
-                                                </TableCell>
-                                                <TableCell className="py-2.5 text-right text-xs tabular-nums">
-                                                    {rupiah(item.revenue)}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                        <TableRow className="border-t-2 border-border font-semibold hover:bg-transparent">
-                                            <TableCell className="py-2.5 text-xs">Total</TableCell>
-                                            <TableCell className="py-2.5 text-right text-xs tabular-nums">
-                                                {data.items_breakdown.reduce((s, i) => s + i.quantity, 0)}
-                                            </TableCell>
-                                            <TableCell className="py-2.5 text-right text-xs tabular-nums">
-                                                {rupiah(data.items_breakdown.reduce((s, i) => s + i.revenue, 0))}
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
+                        {/* Date Pickers */}
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                                <Label htmlFor="start-date" className="text-xs text-muted-foreground whitespace-nowrap">
+                                    Dari:
+                                </Label>
+                                <Input
+                                    id="start-date"
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => {
+                                        setStartDate(e.target.value);
+                                        setActivePreset('custom');
+                                    }}
+                                    className="h-8 text-xs w-36"
+                                />
                             </div>
-                        </CardContent>
-                    </Card>
-                )}
+                            <div className="flex items-center gap-1.5">
+                                <Label htmlFor="end-date" className="text-xs text-muted-foreground whitespace-nowrap">
+                                    Sampai:
+                                </Label>
+                                <Input
+                                    id="end-date"
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => {
+                                        setEndDate(e.target.value);
+                                        setActivePreset('custom');
+                                    }}
+                                    className="h-8 text-xs w-36"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                {/* Empty state */}
-                {!data && !loading && (
-                    <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-                        <ShoppingBag className="mb-3 size-12 opacity-20" aria-hidden="true" />
-                        <p className="text-sm">Tekan "Lihat Laporan" untuk menampilkan data penjualan.</p>
+                {/* Print Only Header Banner */}
+                <div className="hidden print:block text-center border-b pb-4 mb-4">
+                    <h2 className="text-xl font-bold uppercase">Laporan Penjualan Kantin TeFa SMK</h2>
+                    <p className="text-xs text-zinc-600">
+                        Periode: {startDate} s/d {endDate}
+                    </p>
+                </div>
+
+                {/* Content */}
+                {isLoading ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-2">
+                        <Loader2 className="size-8 animate-spin text-primary" />
+                        <p className="text-xs">Mengambil rekapitulasi data penjualan...</p>
+                    </div>
+                ) : !data ? (
+                    <p className="text-center py-10 text-xs text-muted-foreground">
+                        Data laporan tidak dapat dimuat.
+                    </p>
+                ) : (
+                    <div className="space-y-6">
+                        {/* Summary Cards */}
+                        <ReportSummary
+                            totalSales={data.total_sales}
+                            transactionCount={data.transaction_count}
+                            cashSales={data.cash_sales}
+                            qrisSales={data.qris_sales}
+                        />
+
+                        {/* Tables */}
+                        <ReportTable
+                            transactions={data.transactions}
+                            itemsBreakdown={data.items_breakdown}
+                        />
                     </div>
                 )}
             </div>
-        </>
+        </AppLayout>
     );
 }
-
-Report.layout = {
-    breadcrumbs: [
-        {
-            title: 'Laporan',
-            href: report(),
-        },
-    ],
-};
