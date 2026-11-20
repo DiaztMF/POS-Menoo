@@ -1,7 +1,7 @@
 <?php
 
-test('landing page redirects to login', function () {
+test('landing page redirects to dashboard', function () {
     $response = $this->get(route('home'));
 
-    $response->assertRedirect(route('login'));
+    $response->assertRedirect(route('dashboard'));
 });
