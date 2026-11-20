@@ -19,7 +19,7 @@ class RealisticPosSeeder extends Seeder
     {
         $user = User::first() ?? User::factory()->create([
             'name' => 'Kasir TeFa',
-            'email' => 'kasir@tefa.sch.id',
+            'email' => 'kasir@gmail.com',
             'password' => bcrypt('password'),
         ]);
 

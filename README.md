@@ -44,7 +44,7 @@ pnpm run dev
 ```
 
 Buka browser di `http://127.0.0.1:8000`. Login menggunakan akun default:
-- **Email:** `kasir@tefa.sch.id`
+- **Email:** `kasir@gmail.com`
 - **Password:** `password`
 
 ---
