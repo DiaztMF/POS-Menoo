@@ -21,7 +21,7 @@ class TransactionFactory extends Factory
     {
         $total = fake()->numberBetween(10000, 200000);
         return [
-            'invoice_no' => 'INV-' . Carbon::today()->format('ymd') . '-' . fake()->unique()->numerify('####'),
+            'invoice_no' => 'INV-' . Carbon::today()->format('dmy-Hi') . '-' . fake()->unique()->numerify('####'),
             'user_id' => User::factory(),
             'total_amount' => $total,
             'cash_given' => $total,

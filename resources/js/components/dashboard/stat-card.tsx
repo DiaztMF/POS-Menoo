@@ -12,19 +12,19 @@ type Props = {
 export function StatCard({ title, value, subtitle, icon: Icon, accentColor = 'text-primary' }: Props) {
     return (
         <Card className="border-border/70 bg-card shadow-xs">
-            <CardContent className="p-5">
+            <CardContent className="p-3.5 sm:p-4">
                 <div className="flex items-center justify-between">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider truncate">
                         {title}
                     </p>
-                    <div className={`p-2 rounded-lg bg-muted/60 ${accentColor}`}>
-                        <Icon className="size-4" />
+                    <div className={`p-1.5 rounded-md bg-muted/60 ${accentColor}`}>
+                        <Icon className="size-3.5" />
                     </div>
                 </div>
-                <div className="mt-2">
-                    <h3 className="text-2xl font-bold tracking-tight text-foreground">{value}</h3>
+                <div className="mt-1">
+                    <h3 className="text-xl font-bold tracking-tight text-foreground leading-tight">{value}</h3>
                     {subtitle && (
-                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <p className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 truncate">
                             {subtitle}
                         </p>
                     )}

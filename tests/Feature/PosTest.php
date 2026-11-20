@@ -69,6 +69,7 @@ test('authenticated user can checkout a transaction', function () {
         'payment_method' => 'cash',
         'payment_status' => 'paid',
     ]);
+    expect($response->json('invoice_no'))->toMatch('/^INV-\d{6}-\d{4}/');
 
     expect($item->fresh()->transactionItems)->toHaveCount(1);
 });

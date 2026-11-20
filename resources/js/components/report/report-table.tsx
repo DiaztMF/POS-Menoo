@@ -67,7 +67,7 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
                     ) : (
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-muted/30">
+                                <TableRow className="bg-muted/40 hover:bg-muted/40">
                                     <TableHead className="w-12 text-center">#</TableHead>
                                     <TableHead>Nama Menu</TableHead>
                                     <TableHead>Kategori</TableHead>
@@ -119,11 +119,11 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
                     ) : (
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-muted/30">
+                                <TableRow className="bg-muted/40 hover:bg-muted/40">
                                     <TableHead>No. Invoice</TableHead>
                                     <TableHead>Tanggal & Waktu</TableHead>
                                     <TableHead>Kasir</TableHead>
-                                    <TableHead>Metode</TableHead>
+                                    <TableHead className="text-center">Metode</TableHead>
                                     <TableHead className="text-center">Jumlah Item</TableHead>
                                     <TableHead className="text-right">Total Transaksi</TableHead>
                                     <TableHead className="text-center w-24">Aksi</TableHead>
@@ -141,7 +141,7 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
                                         <TableCell className="text-xs">
                                             {tx.cashier}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-center">
                                             <Badge
                                                 variant="outline"
                                                 className="text-[10px] uppercase font-bold text-amber-900 border-amber-300 bg-amber-50/50"

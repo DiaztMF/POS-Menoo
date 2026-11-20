@@ -121,33 +121,38 @@ export default function Dashboard({
                 </div>
 
                 {/* Middle Grid: Sales Trend Chart (60%) & Recent Orders (40%) */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                     {/* 7-Day Chart (2 Cols) */}
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-2 h-full">
                         <SalesTrendChart data={sales_trend_7d} />
                     </div>
 
                     {/* Recent Transactions (1 Col) */}
-                    <Card className="border-border/70 shadow-xs flex flex-col justify-between">
-                        <CardHeader className="pb-3 border-b border-border/40 flex flex-row items-center justify-between">
-                            <CardTitle className="text-base font-bold flex items-center gap-2">
-                                <Clock className="size-4 text-muted-foreground" />
-                                Transaksi Terkini
-                            </CardTitle>
+                    <Card className="border-border/70 shadow-xs h-full flex flex-col justify-between">
+                        <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border/40 min-h-[64px]">
+                            <div className="space-y-0.5">
+                                <CardTitle className="text-base font-bold flex items-center gap-2">
+                                    <Clock className="size-4 text-primary" />
+                                    Transaksi Terkini
+                                </CardTitle>
+                                <p className="text-xs text-muted-foreground">
+                                    Daftar transaksi kasir terbaru
+                                </p>
+                            </div>
                             <Link
                                 href="/laporan"
-                                className="text-xs text-primary hover:underline font-medium flex items-center"
+                                className="text-xs text-primary hover:underline font-semibold flex items-center shrink-0"
                             >
                                 Semua <ArrowRight className="size-3 ml-0.5" />
                             </Link>
                         </CardHeader>
-                        <CardContent className="pt-3 flex-1 flex flex-col justify-between">
+                        <CardContent className="pt-3 pb-3 flex-1 flex flex-col justify-between min-h-0">
                             {recent_transactions.length === 0 ? (
-                                <p className="text-xs text-center text-muted-foreground py-8">
+                                <p className="text-xs text-center text-muted-foreground py-8 my-auto">
                                     Belum ada transaksi hari ini
                                 </p>
                             ) : (
-                                <div className="space-y-3">
+                                <div className="max-h-[260px] overflow-y-auto pr-1.5 space-y-2.5">
                                     {recent_transactions.map((tx) => (
                                         <div
                                             key={tx.id}
@@ -177,8 +182,8 @@ export default function Dashboard({
                                 </div>
                             )}
 
-                            <div className="pt-4 border-t border-border/40 mt-4">
-                                <Button asChild variant="outline" size="sm" className="w-full text-xs">
+                            <div className="pt-3 border-t border-border/40 mt-3">
+                                <Button asChild variant="outline" size="sm" className="w-full text-xs font-semibold">
                                     <Link href="/pos">Mulai Kasir Baru</Link>
                                 </Button>
                             </div>

@@ -174,7 +174,7 @@ export default function Report() {
                                         setStartDate(e.target.value);
                                         setActivePreset('custom');
                                     }}
-                                    className="h-8 text-xs w-36"
+                                    className="h-8 text-xs w-38 sm:w-40 px-2.5 cursor-pointer font-medium bg-background [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-75 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
                                 />
                             </div>
                             <div className="flex items-center gap-1.5">
@@ -189,7 +189,7 @@ export default function Report() {
                                         setEndDate(e.target.value);
                                         setActivePreset('custom');
                                     }}
-                                    className="h-8 text-xs w-36"
+                                    className="h-8 text-xs w-38 sm:w-40 px-2.5 cursor-pointer font-medium bg-background [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-75 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
                                 />
                             </div>
                         </div>

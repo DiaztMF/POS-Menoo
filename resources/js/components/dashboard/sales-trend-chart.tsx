@@ -25,8 +25,8 @@ const rupiah = (val: number): string => `Rp ${val.toLocaleString('id-ID')}`;
 
 export function SalesTrendChart({ data }: Props) {
     return (
-        <Card className="border-border/70 bg-card shadow-xs">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/40">
+        <Card className="border-border/70 bg-card shadow-xs h-full flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border/40 min-h-[64px]">
                 <div className="space-y-0.5">
                     <CardTitle className="text-base font-bold flex items-center gap-2">
                         <TrendingUp className="size-4 text-primary" />
@@ -37,7 +37,7 @@ export function SalesTrendChart({ data }: Props) {
                     </p>
                 </div>
             </CardHeader>
-            <CardContent className="pt-4">
+            <CardContent className="pt-4 flex-1 flex flex-col justify-center">
                 <div className="h-64 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart

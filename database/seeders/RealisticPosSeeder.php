@@ -71,7 +71,6 @@ class RealisticPosSeeder extends Seeder
 
         // 3. Past 7 days realistic transactions (from 6 days ago up to today)
         $today = Carbon::today();
-        $invoiceSeq = 1;
 
         for ($dayOffset = 6; $dayOffset >= 0; $dayOffset--) {
             $date = $today->copy()->subDays($dayOffset);
@@ -79,7 +78,14 @@ class RealisticPosSeeder extends Seeder
             $txCount = rand(5, 10);
 
             for ($i = 0; $i < $txCount; $i++) {
-                $invoiceNo = sprintf('INV-%s-%04d', $date->format('ymd'), $invoiceSeq++);
+                $txTime = $date->copy()->setHour(rand(8, 17))->setMinute(rand(0, 59))->setSecond(rand(0, 59));
+                $baseInvoice = 'INV-' . $txTime->format('dmy-Hi');
+                $invoiceNo = $baseInvoice;
+                $suffix = 1;
+                while (Transaction::where('invoice_no', $invoiceNo)->exists()) {
+                    $invoiceNo = sprintf('%s-%02d', $baseInvoice, $suffix++);
+                }
+
                 $paymentMethod = 'cash';
 
                 // Pick 1 to 3 random items
@@ -105,8 +111,6 @@ class RealisticPosSeeder extends Seeder
                     $cashGiven += (rand(1, 2) === 1 ? 10000 : 20000);
                 }
                 $changeAmount = $cashGiven - $totalAmount;
-
-                $txTime = $date->copy()->setHour(rand(8, 17))->setMinute(rand(0, 59))->setSecond(rand(0, 59));
 
                 $transaction = Transaction::create([
                     'invoice_no' => $invoiceNo,
