@@ -68,8 +68,7 @@ WORKDIR /app
 # Set default environment variables
 ENV APP_ENV=production \
     APP_DEBUG=false \
-    LOG_CHANNEL=stderr \
-    FRANKENPHP_CONFIG="worker ./public/index.php"
+    LOG_CHANNEL=stderr
 
 # Copy base Laravel source
 COPY . /app

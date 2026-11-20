@@ -2,9 +2,6 @@
     admin off
     auto_https off
     {$CADDY_GLOBAL_OPTIONS}
-    frankenphp {
-        {$FRANKENPHP_CONFIG}
-    }
 }
 
 :80 {
