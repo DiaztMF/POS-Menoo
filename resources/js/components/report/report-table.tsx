@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Table,
     TableBody,
@@ -10,6 +10,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { Eye, FileText, Utensils } from 'lucide-react';
 import { ReceiptDialog, type ReceiptData } from '@/components/pos/receipt-dialog';
 
@@ -49,15 +50,43 @@ const rupiah = (val: number): string => `Rp ${val.toLocaleString('id-ID')}`;
 export function ReportTable({ transactions, itemsBreakdown }: Props) {
     const [selectedReceipt, setSelectedReceipt] = useState<ReceiptData | null>(null);
 
+    // Pagination states
+    const [breakdownPage, setBreakdownPage] = useState(1);
+    const breakdownPageSize = 8;
+    const totalBreakdownPages = Math.ceil(itemsBreakdown.length / breakdownPageSize);
+    const paginatedItems = itemsBreakdown.slice(
+        (breakdownPage - 1) * breakdownPageSize,
+        breakdownPage * breakdownPageSize
+    );
+
+    const [ledgerPage, setLedgerPage] = useState(1);
+    const ledgerPageSize = 10;
+    const totalLedgerPages = Math.ceil(transactions.length / ledgerPageSize);
+    const paginatedTransactions = transactions.slice(
+        (ledgerPage - 1) * ledgerPageSize,
+        ledgerPage * ledgerPageSize
+    );
+
+    // Reset pagination when data updates (e.g. date filter change)
+    useEffect(() => {
+        setBreakdownPage(1);
+        setLedgerPage(1);
+    }, [itemsBreakdown.length, transactions.length]);
+
     return (
         <div className="space-y-6">
             {/* Top Items Breakdown */}
             <Card className="border-border/70 shadow-xs">
                 <CardHeader className="pb-3 border-b border-border/40">
-                    <CardTitle className="text-base font-bold flex items-center gap-2">
-                        <Utensils className="size-4 text-primary" />
-                        Rincian Penjualan per Menu
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                        <CardTitle className="text-base font-bold flex items-center gap-2">
+                            <Utensils className="size-4 text-primary" />
+                            Rincian Penjualan per Menu
+                        </CardTitle>
+                        <span className="text-xs text-muted-foreground font-medium">
+                            {itemsBreakdown.length} varian menu terjual
+                        </span>
+                    </div>
                 </CardHeader>
                 <CardContent className="p-0">
                     {itemsBreakdown.length === 0 ? (
@@ -65,40 +94,49 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
                             Tidak ada penjualan menu pada periode ini.
                         </p>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-muted/40 hover:bg-muted/40">
-                                    <TableHead className="w-12 text-center">#</TableHead>
-                                    <TableHead>Nama Menu</TableHead>
-                                    <TableHead>Kategori</TableHead>
-                                    <TableHead className="text-center">Kuantitas Terjual</TableHead>
-                                    <TableHead className="text-right">Total Pendapatan</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {itemsBreakdown.map((item, idx) => (
-                                    <TableRow key={item.menu_item_id}>
-                                        <TableCell className="text-center font-medium text-xs text-muted-foreground">
-                                            {idx + 1}
-                                        </TableCell>
-                                        <TableCell className="font-semibold text-xs text-foreground">
-                                            {item.menu_item_name}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className="text-[10px]">
-                                                {item.category}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-center font-bold text-xs">
-                                            {item.quantity} porsi
-                                        </TableCell>
-                                        <TableCell className="text-right font-bold text-xs text-foreground">
-                                            {rupiah(item.revenue)}
-                                        </TableCell>
+                        <>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-b border-border/80 bg-muted/40 hover:bg-muted/40">
+                                        <TableHead className="w-14 text-center">#</TableHead>
+                                        <TableHead>Nama Menu</TableHead>
+                                        <TableHead className="w-44">Kategori</TableHead>
+                                        <TableHead className="text-center w-36">Kuantitas Terjual</TableHead>
+                                        <TableHead className="text-right w-44">Total Pendapatan</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {paginatedItems.map((item, idx) => (
+                                        <TableRow key={item.menu_item_id}>
+                                            <TableCell className="text-center font-medium text-xs text-muted-foreground">
+                                                {(breakdownPage - 1) * breakdownPageSize + idx + 1}
+                                            </TableCell>
+                                            <TableCell className="font-semibold text-xs text-foreground">
+                                                {item.menu_item_name}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className="text-[10px]">
+                                                    {item.category}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-center font-bold text-xs">
+                                                {item.quantity} porsi
+                                            </TableCell>
+                                            <TableCell className="text-right font-bold text-xs text-foreground">
+                                                {rupiah(item.revenue)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            <DataTablePagination
+                                currentPage={breakdownPage}
+                                totalPages={totalBreakdownPages}
+                                totalItems={itemsBreakdown.length}
+                                pageSize={breakdownPageSize}
+                                onPageChange={setBreakdownPage}
+                            />
+                        </>
                     )}
                 </CardContent>
             </Card>
@@ -106,10 +144,15 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
             {/* Detailed Transaction History Table */}
             <Card className="border-border/70 shadow-xs">
                 <CardHeader className="pb-3 border-b border-border/40">
-                    <CardTitle className="text-base font-bold flex items-center gap-2">
-                        <FileText className="size-4 text-primary" />
-                        Buku Riwayat Transaksi (Ledger)
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                        <CardTitle className="text-base font-bold flex items-center gap-2">
+                            <FileText className="size-4 text-primary" />
+                            Buku Riwayat Transaksi (Ledger)
+                        </CardTitle>
+                        <span className="text-xs text-muted-foreground font-medium">
+                            {transactions.length} total transaksi
+                        </span>
+                    </div>
                 </CardHeader>
                 <CardContent className="p-0">
                     {transactions.length === 0 ? (
@@ -117,71 +160,80 @@ export function ReportTable({ transactions, itemsBreakdown }: Props) {
                             Tidak ada data transaksi pada rentang tanggal yang dipilih.
                         </p>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-muted/40 hover:bg-muted/40">
-                                    <TableHead>No. Invoice</TableHead>
-                                    <TableHead>Tanggal & Waktu</TableHead>
-                                    <TableHead>Kasir</TableHead>
-                                    <TableHead className="text-center">Metode</TableHead>
-                                    <TableHead className="text-center">Jumlah Item</TableHead>
-                                    <TableHead className="text-right">Total Transaksi</TableHead>
-                                    <TableHead className="text-center w-24">Aksi</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {transactions.map((tx) => (
-                                    <TableRow key={tx.id}>
-                                        <TableCell className="font-semibold text-xs">
-                                            {tx.invoice_no}
-                                        </TableCell>
-                                        <TableCell className="text-xs text-muted-foreground">
-                                            {tx.date}
-                                        </TableCell>
-                                        <TableCell className="text-xs">
-                                            {tx.cashier}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <Badge
-                                                variant="outline"
-                                                className="text-[10px] uppercase font-bold text-amber-900 border-amber-300 bg-amber-50/50"
-                                            >
-                                                {tx.payment_method}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-center text-xs">
-                                            {tx.items_count} item
-                                        </TableCell>
-                                        <TableCell className="text-right font-bold text-xs text-foreground">
-                                            {rupiah(tx.total_amount)}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <Button
-                                                type="button"
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={() =>
-                                                    setSelectedReceipt({
-                                                        invoice_no: tx.invoice_no,
-                                                        date: tx.date,
-                                                        cashier: tx.cashier,
-                                                        total_amount: tx.total_amount,
-                                                        cash_given: tx.cash_given,
-                                                        change_amount: tx.change_amount,
-                                                        payment_method: tx.payment_method,
-                                                        items: tx.items,
-                                                    })
-                                                }
-                                                className="h-7 text-xs"
-                                            >
-                                                <Eye className="size-3.5 mr-1" />
-                                                Struk
-                                            </Button>
-                                        </TableCell>
+                        <>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-b border-border/80 bg-muted/40 hover:bg-muted/40">
+                                        <TableHead className="w-44">No. Invoice</TableHead>
+                                        <TableHead className="w-40">Tanggal & Waktu</TableHead>
+                                        <TableHead>Kasir</TableHead>
+                                        <TableHead className="text-center w-28">Metode</TableHead>
+                                        <TableHead className="text-center w-28">Jumlah Item</TableHead>
+                                        <TableHead className="text-right w-36">Total Transaksi</TableHead>
+                                        <TableHead className="text-center w-24">Aksi</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {paginatedTransactions.map((tx) => (
+                                        <TableRow key={tx.id}>
+                                            <TableCell className="font-semibold text-xs">
+                                                {tx.invoice_no}
+                                            </TableCell>
+                                            <TableCell className="text-xs text-muted-foreground">
+                                                {tx.date}
+                                            </TableCell>
+                                            <TableCell className="text-xs">
+                                                {tx.cashier}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                <Badge
+                                                    variant="outline"
+                                                    className="text-[10px] uppercase font-bold text-amber-900 border-amber-300 bg-amber-50/50"
+                                                >
+                                                    {tx.payment_method}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-center text-xs">
+                                                {tx.items_count} item
+                                            </TableCell>
+                                            <TableCell className="text-right font-bold text-xs text-foreground">
+                                                {rupiah(tx.total_amount)}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    onClick={() =>
+                                                        setSelectedReceipt({
+                                                            invoice_no: tx.invoice_no,
+                                                            date: tx.date,
+                                                            cashier: tx.cashier,
+                                                            total_amount: tx.total_amount,
+                                                            cash_given: tx.cash_given,
+                                                            change_amount: tx.change_amount,
+                                                            payment_method: tx.payment_method,
+                                                            items: tx.items,
+                                                        })
+                                                    }
+                                                    className="h-7 text-xs"
+                                                >
+                                                    <Eye className="size-3.5 mr-1" />
+                                                    Struk
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            <DataTablePagination
+                                currentPage={ledgerPage}
+                                totalPages={totalLedgerPages}
+                                totalItems={transactions.length}
+                                pageSize={ledgerPageSize}
+                                onPageChange={setLedgerPage}
+                            />
+                        </>
                     )}
                 </CardContent>
             </Card>
