@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Pos\CategoryController;
 use App\Http\Controllers\Pos\DashboardController;
 use App\Http\Controllers\Pos\MenuController;
 use App\Http\Controllers\Pos\PosController;
@@ -36,6 +37,14 @@ Route::middleware(['auth', 'verified'])->prefix('api')->group(function () {
         Route::put('{menuItem}', [MenuController::class, 'update'])->name('menu.update');
         Route::patch('{menuItem}/toggle', [MenuController::class, 'toggle'])->name('menu.toggle');
         Route::delete('{menuItem}', [MenuController::class, 'destroy'])->name('menu.destroy');
+    });
+
+    // Category CRUD routes
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+        Route::post('/', [CategoryController::class, 'store'])->name('categories.store');
+        Route::put('{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
 });
 

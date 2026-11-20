@@ -14,9 +14,11 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { MenuDialog, type MenuItemData } from '@/components/menu/menu-dialog';
+import { CategoryDialog, type CategoryItem } from '@/components/menu/category-dialog';
 import {
     CheckCircle2,
     Edit2,
+    FolderPlus,
     Plus,
     Search,
     Trash2,
@@ -49,7 +51,9 @@ type Props = {
 
 const rupiah = (val: number): string => `Rp ${val.toLocaleString('id-ID')}`;
 
-export default function MenuIndex({ categories, items: initialItems }: Props) {
+export default function MenuIndex({ categories: initialCategories, items: initialItems }: Props) {
+    const [categories, setCategories] = useState<CategoryItem[]>(initialCategories);
+    const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
     const [items, setItems] = useState<MenuItemRow[]>(initialItems);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -58,10 +62,22 @@ export default function MenuIndex({ categories, items: initialItems }: Props) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<MenuItemData | null>(null);
 
-    // Keep internal items state in sync if server props update
-    useMemo(() => {
+    // Keep internal items & categories state in sync if server props update
+    useEffect(() => {
         setItems(initialItems);
     }, [initialItems]);
+
+    useEffect(() => {
+        setCategories(initialCategories);
+    }, [initialCategories]);
+
+    // Compute categories with live menu items count
+    const categoriesWithCount = useMemo(() => {
+        return categories.map((cat) => ({
+            ...cat,
+            menu_items_count: items.filter((i) => i.menu_category_id === cat.id).length,
+        }));
+    }, [categories, items]);
 
     // Filter items
     const filteredItems = useMemo(() => {
@@ -161,24 +177,35 @@ export default function MenuIndex({ categories, items: initialItems }: Props) {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                            Kelola Menu Makanan & Minuman
+                            Kelola Menu & Kategori
                         </h1>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                            Daftar master produk, pengaturan harga jual, dan status ketersediaan di kasir.
+                            Daftar master produk, pengaturan harga jual, dan kelola kategori produk kasir.
                         </p>
                     </div>
 
-                    <Button
-                        type="button"
-                        onClick={() => {
-                            setEditingItem(null);
-                            setDialogOpen(true);
-                        }}
-                        className="bg-primary text-primary-foreground font-semibold shadow-xs"
-                    >
-                        <Plus className="mr-2 size-4" />
-                        Tambah Menu Baru
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setCategoryDialogOpen(true)}
+                            className="font-semibold shadow-xs"
+                        >
+                            <FolderPlus className="mr-2 size-4 text-primary" />
+                            Kelola Kategori
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={() => {
+                                setEditingItem(null);
+                                setDialogOpen(true);
+                            }}
+                            className="bg-primary text-primary-foreground font-semibold shadow-xs"
+                        >
+                            <Plus className="mr-2 size-4" />
+                            Tambah Menu Baru
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Filter and Search Bar */}
@@ -347,7 +374,7 @@ export default function MenuIndex({ categories, items: initialItems }: Props) {
                 </Card>
             </div>
 
-            {/* Modal Dialog */}
+            {/* Modal Dialog Menu */}
             <MenuDialog
                 open={dialogOpen}
                 onClose={() => {
@@ -357,6 +384,22 @@ export default function MenuIndex({ categories, items: initialItems }: Props) {
                 onSuccess={handleSuccessRefresh}
                 categories={categories}
                 initialData={editingItem}
+            />
+
+            {/* Modal Dialog Kategori */}
+            <CategoryDialog
+                open={categoryDialogOpen}
+                onClose={() => setCategoryDialogOpen(false)}
+                categories={categoriesWithCount}
+                onCategoriesUpdated={(updated) => {
+                    setCategories(updated);
+                    if (
+                        selectedCategory !== 'all' &&
+                        !updated.some((c) => String(c.id) === selectedCategory)
+                    ) {
+                        setSelectedCategory('all');
+                    }
+                }}
             />
         </>
     );
