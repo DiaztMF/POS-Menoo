@@ -15,13 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Kasir TeFa',
-            'email' => 'kasir@gmail.com',
-            'password' => bcrypt('password'),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'kasir@gmail.com'],
+            [
+                'name' => 'Kasir TeFa',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         $this->call(RealisticPosSeeder::class);
     }

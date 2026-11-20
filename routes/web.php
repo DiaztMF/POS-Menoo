@@ -11,14 +11,14 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::inertia('pos', 'pos')->name('pos');
     Route::inertia('laporan', 'report')->name('report');
     Route::get('menu', [MenuController::class, 'index'])->name('menu.index');
 });
 
-Route::middleware(['auth', 'verified'])->prefix('api')->group(function () {
+Route::middleware(['auth'])->prefix('api')->group(function () {
     // POS routes
     Route::prefix('pos')->group(function () {
         Route::get('menu', [PosController::class, 'index'])->name('pos.menu');

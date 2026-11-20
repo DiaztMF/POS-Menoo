@@ -17,11 +17,14 @@ class RealisticPosSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::first() ?? User::factory()->create([
-            'name' => 'Kasir TeFa',
-            'email' => 'kasir@gmail.com',
-            'password' => bcrypt('password'),
-        ]);
+        $user = User::firstOrCreate(
+            ['email' => 'kasir@gmail.com'],
+            [
+                'name' => 'Kasir TeFa',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // 1. Categories
         $catMakanan = MenuCategory::updateOrCreate(
