@@ -26,6 +26,14 @@ class MenuItem extends Model
     /** @use HasFactory<MenuItemFactory> */
     use HasFactory;
 
+    protected function casts(): array
+    {
+        return [
+            'is_available' => 'boolean',
+            'price' => 'integer',
+        ];
+    }
+
     public function category()
     {
         return $this->belongsTo(MenuCategory::class);
