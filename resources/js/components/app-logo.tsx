@@ -1,7 +1,7 @@
 export default function AppLogo() {
     return (
         <>
-            <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg">
+            <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg shrink-0">
                 <img
                     src="/menoo-icon.svg"
                     alt="Menoo Icon"
@@ -10,7 +10,7 @@ export default function AppLogo() {
                     className="object-cover"
                 />
             </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
+            <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                 <span className="truncate text-base font-bold text-zinc-900 dark:text-zinc-100">
                     Menoo
                 </span>

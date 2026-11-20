@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    environment:
+      APP_NAME: "Menoo"
+      APP_ENV: "production"
+      APP_DEBUG: "false"
+      APP_URL: "http://localhost:8000"
+      APP_KEY: "base64:XG8d2Lq1mRzW4pT8yU0iK3vB7cF5eA9sD1jH4lG6fEw="
+      DB_CONNECTION: "pgsql"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_DATABASE: "tefa_pos"
+      DB_USERNAME: "postgres"
+      DB_PASSWORD: "pos_password"
+      RUN_MIGRATIONS: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - tefa_network
+
+  db:
+    image: postgres:16.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "tefa_pos"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "pos_password"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tefa_network
+
+volumes:
+  postgres_data:
+
+networks:
+  tefa_network:
+    driver: bridge
