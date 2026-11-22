@@ -53,8 +53,9 @@ export function ReceiptDialog({ open, onClose, receipt }: Props) {
                     {/* Store Header */}
                     <div className="text-center space-y-1 mb-3">
                         <h2 className="font-bold text-sm tracking-wide uppercase">Kantin TeFa SMK</h2>
-                        <p className="text-[10px] text-zinc-600">Teaching Factory Food & Beverage</p>
-                        <p className="text-[10px] text-zinc-500">Jl. Pelajar No. 2, Surakarta</p>
+                        <p className="text-[10px] text-zinc-600 leading-tight">
+                            Jl. Adi Sucipto No.33, Manahan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah
+                        </p>
                     </div>
 
                     <div className="border-t border-dashed border-zinc-400 my-2" />
