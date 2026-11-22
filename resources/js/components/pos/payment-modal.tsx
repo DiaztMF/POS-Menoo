@@ -64,31 +64,31 @@ export function PaymentModal({
 
     return (
         <Dialog open={open} onOpenChange={(val) => !val && onClose()}>
-            <DialogContent className="max-w-md p-6">
+            <DialogContent className="w-[95vw] sm:max-w-md p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                    <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2">
                         <Banknote className="size-5 text-primary" />
                         <span>Pembayaran Tunai (Cash)</span>
                     </DialogTitle>
                 </DialogHeader>
 
                 {/* Total display banner */}
-                <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center my-2">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <div className="bg-primary/5 border border-primary/20 rounded-xl p-3 sm:p-4 text-center my-2">
+                    <p className="text-[11px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Total Tagihan
                     </p>
-                    <p className="text-3xl font-extrabold text-foreground mt-1">
+                    <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-1">
                         {rupiah(totalAmount)}
                     </p>
                 </div>
 
-                <div className="space-y-4 my-2">
+                <div className="space-y-3 sm:space-y-4 my-2">
                     {/* Quick cash chips */}
                     <div>
-                        <Label className="text-xs text-muted-foreground mb-2 block">
+                        <Label className="text-xs text-muted-foreground mb-1.5 sm:mb-2 block">
                             Pilihan Cepat Uang Diterima:
                         </Label>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
                             {quickCashOptions.map((opt, i) => (
                                 <Button
                                     key={i}
@@ -137,12 +137,13 @@ export function PaymentModal({
                     </div>
                 </div>
 
-                <DialogFooter className="pt-2 flex gap-2 sm:justify-between">
+                <DialogFooter className="pt-2 flex flex-col-reverse sm:flex-row gap-2 sm:justify-between">
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={onClose}
                         disabled={isSubmitting}
+                        className="w-full sm:w-auto"
                     >
                         Batal
                     </Button>
@@ -150,7 +151,7 @@ export function PaymentModal({
                         type="button"
                         onClick={handleSubmit}
                         disabled={!isSufficient || isSubmitting}
-                        className="bg-primary text-primary-foreground font-semibold px-6"
+                        className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold px-6"
                     >
                         {isSubmitting ? (
                             <>
