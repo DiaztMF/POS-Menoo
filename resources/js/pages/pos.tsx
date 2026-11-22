@@ -198,7 +198,7 @@ function CartSection({
                     onClick={onCheckout}
                     className="w-full h-11 sm:h-12 text-sm font-bold bg-primary text-primary-foreground shadow-md hover:bg-primary/90"
                 >
-                    Bayar Pesanan (F9)
+                    Bayar Pesanan
                 </Button>
             </div>
         </div>
