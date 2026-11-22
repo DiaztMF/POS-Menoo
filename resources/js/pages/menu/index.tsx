@@ -279,88 +279,90 @@ export default function MenuIndex({ categories: initialCategories, items: initia
                             </div>
                         ) : (
                             <>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border-b border-border/80 bg-muted/40 hover:bg-muted/40">
-                                            <TableHead className="w-14 text-center">#</TableHead>
-                                            <TableHead>Nama Menu</TableHead>
-                                            <TableHead className="w-44">Kategori</TableHead>
-                                            <TableHead className="text-right w-36">Harga Jual</TableHead>
-                                            <TableHead className="text-center w-36">Status</TableHead>
-                                            <TableHead className="text-center w-28">Aksi</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {paginatedItems.map((item, idx) => (
-                                            <TableRow key={item.id}>
-                                                <TableCell className="text-center font-medium text-xs text-muted-foreground">
-                                                    {(currentPage - 1) * pageSize + idx + 1}
-                                                </TableCell>
-                                                <TableCell className="font-semibold text-xs text-foreground">
-                                                    {item.name}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant="secondary" className="text-[10px]">
-                                                        {item.category_name}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right font-bold text-xs text-foreground">
-                                                    {rupiah(item.price)}
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleToggle(item)}
-                                                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                                            item.is_available
-                                                                ? 'bg-[#efebe9] text-[#3e2723] hover:bg-[#d7ccc8]'
-                                                                : 'bg-muted/40 text-muted-foreground hover:bg-muted'
-                                                        }`}
-                                                    >
-                                                        {item.is_available ? (
-                                                            <>
-                                                                <CheckCircle2 className="size-3.5 text-primary" />
-                                                                Tersedia
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <XCircle className="size-3.5 text-muted-foreground" />
-                                                                Habis
-                                                            </>
-                                                        )}
-                                                    </button>
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    <div className="flex items-center justify-center gap-1">
-                                                        <Button
-                                                            type="button"
-                                                            size="icon"
-                                                            variant="ghost"
-                                                            onClick={() => {
-                                                                setEditingItem(item);
-                                                                setDialogOpen(true);
-                                                            }}
-                                                            className="size-7 text-muted-foreground hover:text-foreground"
-                                                            title="Edit Menu"
-                                                        >
-                                                            <Edit2 className="size-3.5" />
-                                                        </Button>
-                                                        <Button
-                                                            type="button"
-                                                            size="icon"
-                                                            variant="ghost"
-                                                            onClick={() => handleDelete(item)}
-                                                            className="size-7 text-muted-foreground hover:text-destructive"
-                                                            title="Hapus Menu"
-                                                        >
-                                                            <Trash2 className="size-3.5" />
-                                                        </Button>
-                                                    </div>
-                                                </TableCell>
+                                <div className="min-h-[500px] overflow-x-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border-b border-border/80 bg-muted/40 hover:bg-muted/40">
+                                                <TableHead className="w-14 text-center whitespace-nowrap">#</TableHead>
+                                                <TableHead className="min-w-[240px] whitespace-nowrap">Nama Menu</TableHead>
+                                                <TableHead className="w-44 whitespace-nowrap">Kategori</TableHead>
+                                                <TableHead className="text-right w-40 whitespace-nowrap">Harga Jual</TableHead>
+                                                <TableHead className="text-center w-36 whitespace-nowrap">Status</TableHead>
+                                                <TableHead className="text-center w-28 whitespace-nowrap">Aksi</TableHead>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {paginatedItems.map((item, idx) => (
+                                                <TableRow key={item.id}>
+                                                    <TableCell className="text-center font-medium text-xs text-muted-foreground whitespace-nowrap">
+                                                        {(currentPage - 1) * pageSize + idx + 1}
+                                                    </TableCell>
+                                                    <TableCell className="font-semibold text-xs text-foreground whitespace-nowrap">
+                                                        {item.name}
+                                                    </TableCell>
+                                                    <TableCell className="whitespace-nowrap">
+                                                        <Badge variant="secondary" className="text-[10px]">
+                                                            {item.category_name}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-bold text-xs text-foreground whitespace-nowrap">
+                                                        {rupiah(item.price)}
+                                                    </TableCell>
+                                                    <TableCell className="text-center whitespace-nowrap">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleToggle(item)}
+                                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                                                item.is_available
+                                                                    ? 'bg-[#efebe9] text-[#3e2723] hover:bg-[#d7ccc8]'
+                                                                    : 'bg-muted/40 text-muted-foreground hover:bg-muted'
+                                                            }`}
+                                                        >
+                                                            {item.is_available ? (
+                                                                <>
+                                                                    <CheckCircle2 className="size-3.5 text-primary" />
+                                                                    Tersedia
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <XCircle className="size-3.5 text-muted-foreground" />
+                                                                    Habis
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    </TableCell>
+                                                    <TableCell className="text-center whitespace-nowrap">
+                                                        <div className="flex items-center justify-center gap-1">
+                                                            <Button
+                                                                type="button"
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                onClick={() => {
+                                                                    setEditingItem(item);
+                                                                    setDialogOpen(true);
+                                                                }}
+                                                                className="size-7 text-muted-foreground hover:text-foreground"
+                                                                title="Edit Menu"
+                                                            >
+                                                                <Edit2 className="size-3.5" />
+                                                            </Button>
+                                                            <Button
+                                                                type="button"
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                onClick={() => handleDelete(item)}
+                                                                className="size-7 text-muted-foreground hover:text-destructive"
+                                                                title="Hapus Menu"
+                                                            >
+                                                                <Trash2 className="size-3.5" />
+                                                            </Button>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                                 <DataTablePagination
                                     currentPage={currentPage}
                                     totalPages={totalPages}
