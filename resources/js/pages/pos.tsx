@@ -59,7 +59,6 @@ interface CartSectionProps {
     onClearCart: () => void;
     onCheckout: () => void;
     isMobile?: boolean;
-    onCloseMobile?: () => void;
 }
 
 function CartSection({
@@ -71,12 +70,11 @@ function CartSection({
     onClearCart,
     onCheckout,
     isMobile = false,
-    onCloseMobile,
 }: CartSectionProps) {
     return (
         <div className="flex flex-col h-full bg-card/40">
             {/* Cart Header */}
-            <div className="p-3.5 sm:p-4 border-b border-border/60 flex items-center justify-between bg-card shrink-0">
+            <div className={`p-3.5 sm:p-4 border-b border-border/60 flex items-center justify-between bg-card shrink-0 ${isMobile ? 'pr-12' : ''}`}>
                 <div className="flex items-center gap-2">
                     <ShoppingBag className="size-5 text-primary" />
                     <h2 className="font-bold text-sm sm:text-base">Pesanan Aktif</h2>
@@ -95,17 +93,6 @@ function CartSection({
                         >
                             <Trash2 className="size-3.5 mr-1" />
                             Reset
-                        </Button>
-                    )}
-                    {isMobile && onCloseMobile && (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={onCloseMobile}
-                            className="size-8 rounded-full lg:hidden"
-                        >
-                            <X className="size-4" />
                         </Button>
                     )}
                 </div>
@@ -595,7 +582,6 @@ export default function Pos() {
                             setShowPaymentModal(true);
                         }}
                         isMobile
-                        onCloseMobile={() => setMobileCartOpen(false)}
                     />
                 </SheetContent>
             </Sheet>
